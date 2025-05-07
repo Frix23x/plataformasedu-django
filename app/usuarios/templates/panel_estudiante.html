@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Estudiante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf0ff;
+            padding: 40px;
+        }
+        h1 {
+            color: #3c5ed9;
+        }
+        .curso {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .curso p {
+            color: #666;
+        }
+        .inscrito {
+            color: green;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #3c5ed9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #2b49b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hola, {{ request.user.username }}</h1>
+    <h2>Cursos disponibles</h2>
+
+    {% if cursos %}
+        {% for curso in cursos %}
+            <div class="curso">
+                <h3>{{ curso.nombre }}</h3>
+                <p>{{ curso.descripcion }}</p>
+                <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
+
+                {% if curso.id not in cursos_inscritos %}
+                    <form method="post" action="{% url 'inscribirse' curso.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">Inscribirme</button>
+                    </form>
+                {% else %}
+                    <p class="inscrito">Ya inscrito</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay cursos disponibles aún.</p>
+    {% endif %}
+</body>
+</html>

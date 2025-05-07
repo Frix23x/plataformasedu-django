@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Profesor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+            padding: 40px;
+        }
+        h1 {
+            color: #3c5ed9;
+        }
+        .curso {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido, {{ request.user.username }}</h1>
+    <h2>Mis cursos asignados</h2>
+
+    {% if cursos %}
+        {% for curso in cursos %}
+            <div class="curso">
+                <h3>{{ curso.nombre }}</h3>
+                <p>{{ curso.descripcion }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No tienes cursos asignados aún.</p>
+    {% endif %}
+</body>
+</html>
