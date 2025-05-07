@@ -12,6 +12,9 @@
         h1 {
             color: #3c5ed9;
         }
+        h2 {
+            margin-top: 40px;
+        }
         .curso {
             background: white;
             padding: 20px;
@@ -22,47 +25,62 @@
         .curso p {
             color: #666;
         }
-        .inscrito {
-            color: green;
-            font-weight: bold;
-        }
         .btn {
-            background-color: #3c5ed9;
-            color: white;
-            border: none;
+            display: inline-block;
             padding: 10px 20px;
             margin-top: 10px;
-            border-radius: 8px;
+            background-color: #3c5ed9;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
         }
-        .btn:hover {
-            background-color: #2b49b3;
+        .btn-secondary {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
     <h1>Hola, {{ request.user.username }}</h1>
-    <h2>Cursos disponibles</h2>
 
-    {% if cursos %}
-        {% for curso in cursos %}
+    <a href="{% url 'evaluaciones_estudiante' %}">
+        <button class="btn">📋 Ver Evaluaciones</button>
+    </a>
+
+    <h2>🎓 Cursos en los que estás inscrito</h2>
+    {% if cursos_inscritos %}
+        {% for curso in cursos_inscritos %}
             <div class="curso">
                 <h3>{{ curso.nombre }}</h3>
                 <p>{{ curso.descripcion }}</p>
                 <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
-
-                {% if curso.id not in cursos_inscritos %}
-                    <form method="post" action="{% url 'inscribirse' curso.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn">Inscribirme</button>
-                    </form>
-                {% else %}
-                    <p class="inscrito">Ya inscrito</p>
-                {% endif %}
             </div>
         {% endfor %}
     {% else %}
-        <p>No hay cursos disponibles aún.</p>
+        <p>No estás inscrito en ningún curso.</p>
     {% endif %}
+
+    <h2>📚 Cursos disponibles</h2>
+    {% if cursos_disponibles %}
+        {% for curso in cursos_disponibles %}
+            <div class="curso">
+                <h3>{{ curso.nombre }}</h3>
+                <p>{{ curso.descripcion }}</p>
+                <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
+                <form action="{% url 'inscribirse' curso.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Inscribirse</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay cursos nuevos para mostrar.</p>
+    {% endif %}
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary">🚪 Cerrar sesión</button>
+    </form>
 </body>
 </html>

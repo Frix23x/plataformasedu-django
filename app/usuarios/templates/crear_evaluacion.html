@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Evaluación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6ff;
+            padding: 40px;
+        }
+        h1 {
+            color: #2c5dd2;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3c6ff0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2c5dd2;
+        }
+    </style>
+</head>
+<body>
+    <h1>📝 Crear Evaluación</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Evaluación</button>
+    </form>
+
+    <a href="{% url 'panel_profesor' %}">← Volver al panel del profesor</a>
+</body>
+</html>

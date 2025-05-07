@@ -42,3 +42,13 @@ class Inscripcion(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Evaluacion(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='evaluaciones')
+    titulo = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    fecha = models.DateField()
+
+    def __str__(self):
+        return f"{self.titulo} - {self.curso.nombre}"
+

@@ -6,34 +6,75 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f7ff;
+            background: #f2f7ff;
             padding: 40px;
         }
         h1 {
-            color: #3c5ed9;
+            color: #2c4ba7;
+        }
+        h2 {
+            margin-top: 40px;
         }
         .curso {
             background: white;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .curso h3 {
+            color: #2c4ba7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #3c6ff0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-secondary {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>Bienvenido, {{ request.user.username }}</h1>
-    <h2>Mis cursos asignados</h2>
+    <h1>Hola, {{ request.user.username }}</h1>
+    <h2>👨‍🏫 Tus cursos y estudiantes inscritos</h2>
 
-    {% if cursos %}
-        {% for curso in cursos %}
+    {% if cursos_con_estudiantes %}
+        {% for curso, estudiantes in cursos_con_estudiantes %}
             <div class="curso">
                 <h3>{{ curso.nombre }}</h3>
-                <p>{{ curso.descripcion }}</p>
+                <p><strong>Descripción:</strong> {{ curso.descripcion }}</p>
+                <p><strong>Estudiantes inscritos:</strong></p>
+                {% if estudiantes %}
+                    <ul>
+                        {% for estudiante in estudiantes %}
+                            <li>{{ estudiante.username }} ({{ estudiante.email }})</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay estudiantes inscritos aún.</p>
+                {% endif %}
             </div>
         {% endfor %}
     {% else %}
-        <p>No tienes cursos asignados aún.</p>
+        <p>No estás dictando ningún curso aún.</p>
     {% endif %}
+
+    <a href="{% url 'crear_evaluacion' %}" class="btn">➕ Crear nueva evaluación</a>
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary">🚪 Cerrar sesión</button>
+    </form>
 </body>
 </html>
