@@ -31,13 +31,6 @@ docker-compose build
 # Levantar proyecto
 docker-compose up
 
-/app
-  └── usuarios/
-      ├── models.py
-      ├── views.py
-      ├── templates/
-      └── ...
-
 ## Estado actual
 
 Proyecto en desarrollo con fines educativos. No orientado aún a producción.
