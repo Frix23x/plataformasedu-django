@@ -1,86 +1,43 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel del Estudiante</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #eaf0ff;
-            padding: 40px;
-        }
-        h1 {
-            color: #3c5ed9;
-        }
-        h2 {
-            margin-top: 40px;
-        }
-        .curso {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
-        .curso p {
-            color: #666;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 10px;
-            background-color: #3c5ed9;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .btn-secondary {
-            background-color: #555;
-        }
-    </style>
-</head>
-<body>
-    <h1>Hola, {{ request.user.username }}</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-    <a href="{% url 'evaluaciones_estudiante' %}">
-        <button class="btn">📋 Ver Evaluaciones</button>
-    </a>
+{% block title %}Panel del Estudiante{% endblock %}
+{% block body_class %}page-background{% endblock %}
+{% block container_class %}container{% endblock %}
 
-    <h2>🎓 Cursos en los que estás inscrito</h2>
-    {% if cursos_inscritos %}
-        {% for curso in cursos_inscritos %}
-            <div class="curso">
-                <h3>{{ curso.nombre }}</h3>
-                <p>{{ curso.descripcion }}</p>
-                <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No estás inscrito en ningún curso.</p>
-    {% endif %}
+{% block content %}
+<h1 style="color: #3c5ed9;">Hola, {{ request.user.username }}</h1>
 
-    <h2>📚 Cursos disponibles</h2>
-    {% if cursos_disponibles %}
-        {% for curso in cursos_disponibles %}
-            <div class="curso">
-                <h3>{{ curso.nombre }}</h3>
-                <p>{{ curso.descripcion }}</p>
-                <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
-                <form action="{% url 'inscribirse' curso.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn">Inscribirse</button>
-                </form>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No hay cursos nuevos para mostrar.</p>
-    {% endif %}
+<a href="{% url 'evaluaciones_estudiante' %}" class="btn">📋 Ver Evaluaciones</a>
 
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-secondary">🚪 Cerrar sesión</button>
-    </form>
-</body>
-</html>
+<h2>🎓 Cursos en los que estás inscrito</h2>
+{% if cursos_inscritos %}
+    {% for curso in cursos_inscritos %}
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h3><strong>{{ curso.nombre }}</strong></h3>
+            <p>{{ curso.descripcion }}</p>
+            <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No estás inscrito en ningún curso.</p>
+{% endif %}
+
+<h2>📚 Cursos disponibles</h2>
+{% if cursos_disponibles %}
+    {% for curso in cursos_disponibles %}
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h3><strong>{{ curso.nombre }}</strong></h3>
+            <p>{{ curso.descripcion }}</p>
+            <p><strong>Profesor:</strong> {{ curso.profesor.username }}</p>
+            <form action="{% url 'inscribirse' curso.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn">Inscribirse</button>
+            </form>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No hay cursos nuevos para mostrar.</p>
+{% endif %}
+
+{% endblock %}

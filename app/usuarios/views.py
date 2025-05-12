@@ -1,27 +1,28 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-from .forms import RegistroForm
-from .forms import EvaluacionForm
-from .models import Curso, Inscripcion, Usuario
-from .models import Evaluacion
+# views.py
+# Este archivo contiene todas las vistas del proyecto (la lógica de las páginas).
+# Cada función representa una página (HTML) que el usuario puede ver o interactuar.
 
+from django.shortcuts import render, redirect                  # render para mostrar HTML, redirect para redirecciones
+from django.contrib.auth import authenticate, login            # Funciones de autenticación y login de Django
+from django.contrib import messages                            # Sistema de mensajes (flash messages)
+from django.http import HttpResponse                           # Para respuestas simples
+from django.contrib.auth.decorators import login_required      # Decorador para requerir login en una vista
+from django.views.decorators.http import require_POST          # Decorador para aceptar solo POST
+from .forms import RegistroForm, EvaluacionForm                # Formularios personalizados
+from .models import Curso, Inscripcion, Usuario, Evaluacion    # Modelos que se usan en las vistas
 
-# Vista de registro
+# 📝 Vista de registro de usuario
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')  # redirige a la vista login_view
+            return redirect('login')  # Redirige a la página de login tras registrar
     else:
         form = RegistroForm()
     return render(request, 'registro.html', {'form': form})
 
-# Vista de login con redirección por rol
+# 🔐 Vista de login con redirección automática según el rol del usuario
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -30,7 +31,7 @@ def login_view(request):
         usuario = authenticate(request, username=username, password=password)
         if usuario is not None:
             login(request, usuario)
-            # Redirigir según rol
+            # Redirige según el rol del usuario
             if usuario.rol == 'admin':
                 return redirect('/admin/')
             elif usuario.rol == 'profesor':
@@ -42,15 +43,15 @@ def login_view(request):
 
     return render(request, 'login.html')
 
-# Vista real de panel profesor con cursos asignados
+# 👨‍🏫 Vista del panel del profesor
 @login_required
 def panel_profesor(request):
     profesor = request.user
 
-    # Cursos que dicta el profesor
+    # Obtiene todos los cursos que dicta el profesor
     cursos = Curso.objects.filter(profesor=profesor)
 
-    # Para cada curso, obtener sus estudiantes inscritos
+    # Por cada curso, obtener la lista de estudiantes inscritos
     cursos_con_estudiantes = []
     for curso in cursos:
         estudiantes = Usuario.objects.filter(inscripcion__curso=curso)
@@ -60,15 +61,15 @@ def panel_profesor(request):
         'cursos_con_estudiantes': cursos_con_estudiantes
     })
 
-# Igualmente con los estudiantes
+# 🎓 Vista del panel del estudiante
 @login_required
 def panel_estudiante(request):
     usuario = request.user
 
-    # Cursos en los que ya está inscrito
+    # Cursos donde el estudiante ya está inscrito
     cursos_inscritos = Curso.objects.filter(inscripcion__estudiante=usuario)
 
-    # Cursos en los que aún NO está inscrito
+    # Cursos que aún no ha tomado
     cursos_disponibles = Curso.objects.exclude(inscripcion__estudiante=usuario)
 
     return render(request, 'panel_estudiante.html', {
@@ -76,11 +77,13 @@ def panel_estudiante(request):
         'cursos_inscritos': cursos_inscritos,
     })
 
+# ➕ Vista para inscribirse a un curso (solo vía POST)
 @login_required
 @require_POST
 def inscribirse(request, curso_id):
     curso = Curso.objects.get(id=curso_id)
-    # Verifica si ya está inscrito
+    
+    # Evita inscribirse dos veces al mismo curso
     ya_inscrito = Inscripcion.objects.filter(estudiante=request.user, curso=curso).exists()
 
     if not ya_inscrito:
@@ -88,25 +91,27 @@ def inscribirse(request, curso_id):
     
     return redirect('panel_estudiante')
 
+# 📋 Vista para que el estudiante vea sus evaluaciones
 @login_required
 def evaluaciones_estudiante(request):
     usuario = request.user
 
-    # Cursos donde el estudiante está inscrito
+    # Encuentra todos los cursos donde está inscrito
     cursos_inscritos = Curso.objects.filter(inscripcion__estudiante=usuario)
 
-    # Evaluaciones de esos cursos
+    # Y luego encuentra las evaluaciones de esos cursos
     evaluaciones = Evaluacion.objects.filter(curso__in=cursos_inscritos).order_by('fecha')
 
     return render(request, 'evaluaciones_estudiante.html', {
         'evaluaciones': evaluaciones
     })
 
+# 📝 Vista para que el profesor cree una evaluación
 @login_required
 def crear_evaluacion(request):
     profesor = request.user
 
-    # Filtrar solo los cursos que dicta este profesor
+    # Solo puede crear evaluaciones para sus propios cursos
     cursos_del_profesor = Curso.objects.filter(profesor=profesor)
 
     if request.method == 'POST':
@@ -114,7 +119,7 @@ def crear_evaluacion(request):
         if form.is_valid():
             evaluacion = form.save(commit=False)
 
-            # Verifica que el curso sea del profesor
+            # Validación adicional: solo puede crear evaluaciones de sus propios cursos
             if evaluacion.curso in cursos_del_profesor:
                 evaluacion.save()
                 return redirect('panel_profesor')
@@ -122,7 +127,7 @@ def crear_evaluacion(request):
                 form.add_error('curso', 'No puedes crear evaluaciones para cursos que no dictas.')
     else:
         form = EvaluacionForm()
-        # Limita los cursos al profesor
+        # Limita los cursos mostrados en el formulario solo a los del profesor
         form.fields['curso'].queryset = cursos_del_profesor
 
     return render(request, 'crear_evaluacion.html', {'form': form})

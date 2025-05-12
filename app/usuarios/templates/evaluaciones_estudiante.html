@@ -1,54 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Mis Evaluaciones</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5faff;
-            padding: 40px;
-        }
-        h1 {
-            color: #2c60d2;
-        }
-        .evaluacion {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.05);
-        }
-        .btn-volver {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #2c60d2;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <h1>📋 Mis Evaluaciones</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-    {% if evaluaciones %}
-        {% for evaluacion in evaluaciones %}
-            <div class="evaluacion">
-                <h3>{{ evaluacion.titulo }}</h3>
-                <p>{{ evaluacion.descripcion }}</p>
-                <p><strong>Curso:</strong> {{ evaluacion.curso.nombre }}</p>
-                <p><strong>Fecha:</strong> {{ evaluacion.fecha }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No tienes evaluaciones pendientes.</p>
-    {% endif %}
+{% block title %}Mis Evaluaciones{% endblock %}
+{% block body_class %}page-background{% endblock %}
+{% block container_class %}container{% endblock %}
 
-    <a href="{% url 'panel_estudiante' %}" class="btn-volver">← Volver al panel del estudiante</a>
-</body>
-</html>
+{% block content %}
+<h2 style="color: #2c5dd2; margin-bottom: 20px;">📋 Mis Evaluaciones</h2>
+
+{% if evaluaciones %}
+    {% for evaluacion in evaluaciones %}
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.05);">
+            <h3><strong>{{ evaluacion.titulo }}</strong></h3>
+            <p>{{ evaluacion.descripcion }}</p>
+            <p><strong>Curso:</strong> {{ evaluacion.curso.nombre }}</p>
+            <p><strong>Fecha:</strong> {{ evaluacion.fecha }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No tienes evaluaciones pendientes.</p>
+{% endif %}
+
+{% endblock %}

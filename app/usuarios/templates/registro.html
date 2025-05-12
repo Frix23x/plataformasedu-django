@@ -1,104 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Registro</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(to right, #f4f4fc, #e4eaff);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+{% extends 'base.html' %}
+{% load static %}
 
-        .register-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
-            padding: 40px;
-            width: 450px;
-            text-align: center;
-        }
+{% block title %}Registro{% endblock %}
+{% block body_class %}auth-background{% endblock %}
+{% block container_class %}auth-container{% endblock %}
 
-        .register-container img {
-            width: 60px;
-            margin-bottom: 20px;
-        }
+{% block content %}
+    <img src="https://cdn-icons-png.flaticon.com/512/3914/3914115.png" alt="Logo colegio">
+    <h2>Crear Cuenta</h2>
+    <p class="tagline">Completa los campos para registrarte</p>
 
-        h2 {
-            margin-bottom: 10px;
-            color: #333;
-        }
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrarse</button>
+    </form>
 
-        .tagline {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3c5ed9;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #2b49b3;
-        }
-
-        .bottom-text {
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .bottom-text a {
-            color: #d63384;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .errorlist {
-            color: red;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <div class="register-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/3914/3914115.png" alt="Logo colegio">
-        <h2>Crear Cuenta</h2>
-        <p class="tagline">Completa los campos para registrarte</p>
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Registrarse</button>
-        </form>
-
-        <div class="bottom-text">
-            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
-        </div>
+    <div class="bottom-text">
+        ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
     </div>
-</body>
-</html>
-
+{% endblock %}
