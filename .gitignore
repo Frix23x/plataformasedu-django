@@ -8,3 +8,4 @@ media/
 /.vscode/
 /.idea/
 /app/staticfiles/
+/media/
