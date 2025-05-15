@@ -2,6 +2,7 @@
 # Este archivo configura todo el comportamiento del proyecto Django:
 # bases de datos, apps instaladas, rutas, lenguaje, seguridad, etc.
 
+import os
 from pathlib import Path
 
 # Ruta base del proyecto (donde se encuentra manage.py)
@@ -95,3 +96,7 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 
 # 📦 En producción, se usará esta carpeta para recolectar todos los archivos estáticos (con collectstatic)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Archivos
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

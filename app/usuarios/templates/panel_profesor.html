@@ -11,9 +11,11 @@
 
 {% if cursos_con_estudiantes %}
     {% for curso, estudiantes in cursos_con_estudiantes %}
-        <div style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px;"
+     class="evaluacion-box">
             <h3 style="color: #2c4ba7;">{{ curso.nombre }}</h3>
             <p><strong>Descripción:</strong> {{ curso.descripcion }}</p>
+
             <p><strong>Estudiantes inscritos:</strong></p>
             {% if estudiantes %}
                 <ul>
@@ -24,6 +26,23 @@
             {% else %}
                 <p>No hay estudiantes inscritos aún.</p>
             {% endif %}
+
+            {% if curso.evaluaciones.all %}
+                <hr>
+                <p><strong>📝 Evaluaciones del curso:</strong></p>
+                {% for evaluacion in curso.evaluaciones.all %}
+                    <div style="background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 8px;">
+                        <p><strong>{{ evaluacion.titulo }}</strong> – {{ evaluacion.fecha }}</p>
+                        <a href="{% url 'editar_evaluacion' evaluacion.id %}" class="btn">✏️ Editar</a>
+                        <form action="{% url 'eliminar_evaluacion' evaluacion.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">🗑️ Eliminar</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="margin-top: 10px;">Este curso aún no tiene evaluaciones.</p>
+            {% endif %}
         </div>
     {% endfor %}
 {% else %}
@@ -31,6 +50,4 @@
 {% endif %}
 
 <a href="{% url 'crear_evaluacion' %}" class="btn">➕ Crear nueva evaluación</a>
-
-
 {% endblock %}

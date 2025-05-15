@@ -9,7 +9,7 @@
 <h2 style="color: #2c5dd2; text-align: center; margin-bottom: 20px;">📝 Crear Evaluación</h2>
 
 <div class="page-container">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn button-full">Crear Evaluación</button>

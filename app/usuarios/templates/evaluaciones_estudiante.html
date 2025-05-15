@@ -10,13 +10,18 @@
 
 {% if evaluaciones %}
     {% for evaluacion in evaluaciones %}
-        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.05);">
-            <h3><strong>{{ evaluacion.titulo }}</strong></h3>
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h3 style="color: #2c4ba7;">{{ evaluacion.titulo }}</h3>
             <p>{{ evaluacion.descripcion }}</p>
             <p><strong>Curso:</strong> {{ evaluacion.curso.nombre }}</p>
-            <p><strong>Fecha:</strong> {{ evaluacion.fecha }}</p>
+        <p><strong>Fecha:</strong> {{ evaluacion.fecha }}</p>
+
+            {% if evaluacion.archivo_pdf %}
+                <p>📄 <a href="{{ evaluacion.archivo_pdf.url }}" target="_blank">Ver PDF adjunto</a></p>
+            {% endif %}
         </div>
     {% endfor %}
+
 {% else %}
     <p>No tienes evaluaciones pendientes.</p>
 {% endif %}

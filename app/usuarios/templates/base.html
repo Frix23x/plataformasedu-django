@@ -214,9 +214,21 @@
       .dark-mode a {
         color: #ffffff !important;
       }
+      .dark-mode .evaluacion-item {
+        background-color: #1e1e1e !important;
+        color: #f0f0f0 !important;
+      }
+
+      .dark-mode .evaluacion-box {
+        background-color: #1e1e1e !important;
+        color: #f0f0f0 !important;
+        border: 1px solid #333;
+      }
     </style>
   </head>
   <body class="{% block body_class %}default-page{% endblock %}">
+
+    <!-- ✅ BARRA DE NAVEGACIÓN -->
     {% if not request.path == '/login/' and not request.path == '/registro/' %}
     <nav
       style="
@@ -231,7 +243,7 @@
         margin: 10px 20px;
       "
     >
-      <div>
+     <div>
         <a
           href="/"
           style="color: white; text-decoration: none; font-weight: bold"
@@ -239,78 +251,67 @@
         >
       </div>
       <div style="display: flex; gap: 10px; align-items: center">
-        {% if user.is_authenticated %} {% if user.rol == 'profesor' %}
-        <a
-          href="{% url 'panel_profesor' %}"
-          style="
-            background-color: #506dd8;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-          "
-          >Panel Profesor</a
-        >
-
-        {% elif user.rol == 'estudiante' %}
-        <a
-          href="{% url 'panel_estudiante' %}"
-          style="
-            background-color: #506dd8;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-          "
-          >Panel Estudiante</a
-        >
-        {% endif %}
-        <form action="{% url 'logout' %}" method="post" style="display: inline">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-secondary" style="margin: 0">
-            🚪 Cerrar sesión
-          </button>
-        </form>
+        {% if user.is_authenticated %}
+          {% if user.rol == 'profesor' %}
+            <a href="{% url 'panel_profesor' %}" style="background-color: #506dd8; color: white; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 14px;">Panel Profesor</a>
+          {% elif user.rol == 'estudiante' %}
+            <a href="{% url 'panel_estudiante' %}" style="background-color: #506dd8; color: white; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 14px;">Panel Estudiante</a>
+          {% endif %}
+          <form action="{% url 'logout' %}" method="post" style="display: inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary" style="margin: 0">🚪 Cerrar sesión</button>
+          </form>
         {% else %}
-        <a href="{% url 'login' %}" class="btn">Iniciar sesión</a>
+          <a href="{% url 'login' %}" class="btn">Iniciar sesión</a>
         {% endif %}
       </div>
     </nav>
     {% endif %}
 
-    <div class="{% block container_class %}container{% endblock %}">
-      {% block content %}{% endblock %}
-    </div>
+     <!-- ✅ MENSAJES FLASH DE ÉXITO / ERROR -->
+      {% if messages %}
+       <div style="margin: 20px auto; max-width: 600px;">
+          {% for message in messages %}
+            <div style="padding: 12px; background-color: #d1e7dd; color: #0f5132; border-radius: 6px; margin-bottom: 10px;">
+             {{ message }}
+           </div>
+         {% endfor %}
+      </div>
+    {% endif %}
 
-    <!-- 🌙 Botón modo oscuro -->
-    <button
-      id="theme-toggle"
-      style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #ffffff;
-        border: none;
-        border-radius: 20px;
-        padding: 10px 14px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        cursor: pointer;
-        font-size: 18px;
-        z-index: 999;
-      "
-    >
-      🌙
-    </button>
+   <!-- ✅ CONTENIDO DE LA PÁGINA -->
+   <div class="{% block container_class %}container{% endblock %}">
+     {% block content %}{% endblock %}
+   </div>
 
-    <script>
-      const toggleBtn = document.getElementById("theme-toggle");
-      const currentTheme = localStorage.getItem("theme");
+   <!-- ✅ BOTÓN MODO OSCURO -->
+   <button
+     id="theme-toggle"
+     style="
+       position: fixed;
+       bottom: 20px;
+       right: 20px;
+       background-color: #ffffff;
+       border: none;
+       border-radius: 20px;
+       padding: 10px 14px;
+       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+       cursor: pointer;
+       font-size: 18px;
+       z-index: 999;
+     "
+   >
+     🌙
+   </button>
+
+   <!-- ✅ SCRIPT DEL TOGGLE -->
+   <script>
+     const toggleBtn = document.getElementById("theme-toggle");
+     const currentTheme = localStorage.getItem("theme");
 
       if (currentTheme === "dark") {
-        document.body.classList.add("dark-mode");
-        toggleBtn.textContent = "☀️";
+      document.body.classList.add("dark-mode");
+      toggleBtn.textContent = "☀️";
       }
 
       toggleBtn.addEventListener("click", () => {
@@ -318,7 +319,8 @@
         const isDark = document.body.classList.contains("dark-mode");
         localStorage.setItem("theme", isDark ? "dark" : "light");
         toggleBtn.textContent = isDark ? "☀️" : "🌙";
-      });
+     });
     </script>
+
   </body>
 </html>

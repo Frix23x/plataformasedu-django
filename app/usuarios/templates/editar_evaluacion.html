@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Evaluación{% endblock %}
+{% block body_class %}page-background{% endblock %}
+{% block container_class %}container{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #2c5dd2;">✏️ Editar Evaluación</h2>
+
+<div class="page-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ form.curso.label_tag }} {{ form.curso }}
+        </div>
+
+        <div class="form-group">
+            {{ form.titulo.label_tag }} {{ form.titulo }}
+        </div>
+
+        <div class="form-group">
+            {{ form.descripcion.label_tag }} {{ form.descripcion }}
+        </div>
+
+        <div class="form-group">
+            {{ form.fecha.label_tag }} {{ form.fecha }}
+        </div>
+
+        <div class="form-group">
+            <label><strong>Archivo PDF:</strong></label>
+            {% if form.instance.archivo_pdf %}
+                <p>📄 <a href="{{ form.instance.archivo_pdf.url }}" target="_blank">
+                    {{ form.instance.archivo_pdf.name|cut:"evaluaciones/" }}
+                </a></p>
+            {% endif %}
+            <input type="file" name="archivo_pdf" class="form-control">
+            {{ form.archivo_pdf.errors }}
+        </div>
+
+        <button type="submit" class="btn button-full">Guardar cambios</button>
+    </form>
+
+    {% if form.instance.archivo_pdf %}
+        <form method="post" style="margin-top: 15px;">
+            {% csrf_token %}
+            <button type="submit" name="eliminar_pdf" class="btn btn-secondary">🗑️ Eliminar PDF</button>
+        </form>
+    {% endif %}
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .form-group a {
+        color: #3c5ed9;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .form-group a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
